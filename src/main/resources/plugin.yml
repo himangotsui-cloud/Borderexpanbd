@@ -1,0 +1,18 @@
+name: BorderExpand
+version: '1.0.0'
+main: com.example.borderexpand.BorderExpandPlugin
+api-version: '1.21'
+author: You
+description: Expands the world border every time a new block or item is discovered (mined, picked up, crafted, smelted, or fished).
+
+commands:
+  borderexpand:
+    description: Manage the BorderExpand plugin
+    usage: /borderexpand <info|list|reset|add>
+    aliases: [be, bexpand]
+    permission: borderexpand.admin
+
+permissions:
+  borderexpand.admin:
+    description: Allows managing BorderExpand (reset/list/add)
+    default: op

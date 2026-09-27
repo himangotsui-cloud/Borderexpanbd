@@ -1,0 +1,33 @@
+# BorderExpand configuration
+
+# How many blocks to add to the world border's SIZE each time a
+# brand-new block/item is discovered for the first time ever.
+border-expand-amount: 10.0
+
+# How many seconds the border takes to smoothly animate to its new size.
+# Set to 0 for an instant jump.
+expand-duration-seconds: 5
+
+# If this list is empty, ALL loaded worlds have their border expanded.
+# If you only want your main world affected, list it here, e.g.:
+# affected-worlds:
+#   - world
+affected-worlds: []
+
+# Which sources count as "discovering" something new.
+track-mining: true      # breaking a block for the first time
+track-pickup: true      # picking up an item entity for the first time
+track-crafting: true    # crafting an item for the first time
+track-smelting: true    # smelting/smoking/blasting an item for the first time
+track-fishing: true     # catching an item for the first time
+
+# Whether to tell the whole server when someone unlocks something new.
+broadcast-message: true
+
+# %player% and %material% are replaced automatically.
+# '&' color codes are supported.
+discovery-message: "&a&l[Discovery]&r &e%player% &7found &f%material% &7for the first time! &a&lThe world border grows!"
+
+# Play a sound to the whole server when a discovery happens (set to "" to disable).
+# See: https://jd.papermc.io/paper/1.21/org/bukkit/Sound.html
+discovery-sound: "ENTITY_PLAYER_LEVELUP"
