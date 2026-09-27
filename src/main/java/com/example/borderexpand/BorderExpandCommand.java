@@ -1,3 +1,4 @@
+```java
 package com.example.borderexpand;
 
 import org.bukkit.ChatColor;
@@ -33,54 +34,118 @@ public class BorderExpandCommand implements CommandExecutor, TabCompleter {
 
         switch (args[0].toLowerCase()) {
             case "info" -> {
-                sender.sendMessage(ChatColor.GREEN + "BorderExpand: " + ChatColor.WHITE
-                        + manager.getDiscoveredCount() + ChatColor.GRAY + " material(s) discovered so far.");
+                sender.sendMessage(
+                        ChatColor.GREEN + "BorderExpand: "
+                                + ChatColor.WHITE
+                                + manager.getDiscoveredCount()
+                                + ChatColor.GRAY
+                                + " material(s) discovered so far."
+                );
+
                 for (World world : plugin.getServer().getWorlds()) {
-                    sender.sendMessage(ChatColor.GRAY + " - " + world.getName() + ": border size "
-                            + world.getWorldBorder().getSize());
+                    sender.sendMessage(
+                            ChatColor.GRAY
+                                    + " - "
+                                    + world.getName()
+                                    + ": border size "
+                                    + world.getWorldBorder().getSize()
+                    );
                 }
+
                 return true;
             }
+
             case "list" -> {
                 Set<Material> all = manager.getDiscovered();
+
                 if (all.isEmpty()) {
                     sender.sendMessage(ChatColor.YELLOW + "Nothing discovered yet.");
                     return true;
                 }
-                String joined = all.stream().map(Material::name).collect(Collectors.joining(", "));
-                sender.sendMessage(ChatColor.GREEN + "Discovered (" + all.size() + "): " + ChatColor.WHITE + joined);
+
+                String joined = all.stream()
+                        .map(Material::name)
+                        .collect(Collectors.joining(", "));
+
+                sender.sendMessage(
+                        ChatColor.GREEN
+                                + "Discovered ("
+                                + all.size()
+                                + "): "
+                                + ChatColor.WHITE
+                                + joined
+                );
+
                 return true;
             }
+
             case "reset" -> {
                 if (!sender.hasPermission("borderexpand.admin")) {
-                    sender.sendMessage(ChatColor.RED + "You don't have permission to do that.");
+                    sender.sendMessage(
+                            ChatColor.RED + "You don't have permission to do that."
+                    );
                     return true;
                 }
+
                 manager.resetAll();
-                sender.sendMessage(ChatColor.GREEN + "Discovery list cleared. Border sizes were left as-is.");
+
+                sender.sendMessage(
+                        ChatColor.GREEN
+                                + "Discovery list cleared. Border sizes were left as-is."
+                );
+
                 return true;
             }
+
             case "add" -> {
                 if (!sender.hasPermission("borderexpand.admin")) {
-                    sender.sendMessage(ChatColor.RED + "You don't have permission to do that.");
+                    sender.sendMessage(
+                            ChatColor.RED + "You don't have permission to do that."
+                    );
                     return true;
                 }
+
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /borderexpand add <MATERIAL>");
+                    sender.sendMessage(
+                            ChatColor.RED
+                                    + "Usage: /borderexpand add <MATERIAL>"
+                    );
                     return true;
                 }
+
                 try {
-                    Material material = Material.valueOf(args[1].toUpperCase());
+                    Material material =
+                            Material.valueOf(args[1].toUpperCase());
+
                     boolean added = manager.addSilently(material);
                     manager.save();
-                    sender.sendMessage(added
-                            ? ChatColor.GREEN + "Marked " + material + " as already discovered (border not expanded)."
-                            : ChatColor.YELLOW + material + " was already marked as discovered.");
+
+                    if (added) {
+                        sender.sendMessage(
+                                ChatColor.GREEN
+                                        + "Marked "
+                                        + material.name()
+                                        + " as already discovered (border not expanded)."
+                        );
+                    } else {
+                        sender.sendMessage(
+                                ChatColor.YELLOW
+                                        + material.name()
+                                        + " was already marked as discovered."
+                        );
+                    }
+
                 } catch (IllegalArgumentException ex) {
-                    sender.sendMessage(ChatColor.RED + "Unknown material: " + args[1]);
+                    sender.sendMessage(
+                            ChatColor.RED
+                                    + "Unknown material: "
+                                    + args[1]
+                    );
                 }
+
                 return true;
             }
+
             default -> {
                 sendUsage(sender);
                 return true;
@@ -89,32 +154,80 @@ public class BorderExpandCommand implements CommandExecutor, TabCompleter {
     }
 
     private void sendUsage(CommandSender sender) {
-        sender.sendMessage(ChatColor.GOLD + "--- BorderExpand ---");
-        sender.sendMessage(ChatColor.YELLOW + "/borderexpand info " + ChatColor.GRAY + "- show discovery count & border sizes");
-        sender.sendMessage(ChatColor.YELLOW + "/borderexpand list " + ChatColor.GRAY + "- list everything discovered");
-        sender.sendMessage(ChatColor.YELLOW + "/borderexpand reset " + ChatColor.GRAY + "- wipe the discovery list (admin)");
-        sender.sendMessage(ChatColor.YELLOW + "/borderexpand add <material> " + ChatColor.GRAY + "- mark as discovered without expanding (admin)");
+        sender.sendMessage(
+                ChatColor.GOLD + "--- BorderExpand ---"
+        );
+
+        sender.sendMessage(
+                ChatColor.YELLOW
+                        + "/borderexpand info "
+                        + ChatColor.GRAY
+                        + "- show discovery count & border sizes"
+        );
+
+        sender.sendMessage(
+                ChatColor.YELLOW
+                        + "/borderexpand list "
+                        + ChatColor.GRAY
+                        + "- list everything discovered"
+        );
+
+        sender.sendMessage(
+                ChatColor.YELLOW
+                        + "/borderexpand reset "
+                        + ChatColor.GRAY
+                        + "- wipe the discovery list (admin)"
+        );
+
+        sender.sendMessage(
+                ChatColor.YELLOW
+                        + "/borderexpand add <material> "
+                        + ChatColor.GRAY
+                        + "- mark as discovered without expanding (admin)"
+        );
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> onTabComplete(
+            CommandSender sender,
+            Command command,
+            String alias,
+            String[] args
+    ) {
         if (args.length == 1) {
-            return filter(List.of("info", "list", "reset", "add"), args[0]);
+            return filter(
+                    List.of("info", "list", "reset", "add"),
+                    args[0]
+            );
         }
-        if (args.length == 2 && args[0].equalsIgnoreCase("add")) {
+
+        if (args.length == 2
+                && args[0].equalsIgnoreCase("add")) {
+
             List<String> names = new ArrayList<>();
-            for (Material m : Material.values()) {
-                if (m.isItem()) names.add(m.name());
+
+            for (Material material : Material.values()) {
+                if (material.isItem()) {
+                    names.add(material.name());
+                }
             }
+
             return filter(names, args[1]);
         }
+
         return Collections.emptyList();
     }
 
-    private List<String> filter(List<String> options, String prefix) {
+    private List<String> filter(
+            List<String> options,
+            String prefix
+    ) {
         String upper = prefix.toUpperCase();
+
         return options.stream()
-                .filter(o -> o.toUpperCase().startsWith(upper))
+                .filter(option ->
+                        option.toUpperCase().startsWith(upper)
+                )
                 .limit(50)
                 .collect(Collectors.toList());
     }
